@@ -1,5 +1,6 @@
 package com.rest.webservices.restful_web_services.user;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,8 +29,16 @@ public class UserResource {
         return user;
     }
 
+    @DeleteMapping(path = "/users/{id}")
+    public User deleteUserById(@PathVariable int id) {
+        User user = service.deleteById(id);
+        if (user == null)
+            throw new UserNotFoundException("id: " + id);
+        return user;
+    }
+
     @PostMapping(path = "/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         User createdUser = service.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
